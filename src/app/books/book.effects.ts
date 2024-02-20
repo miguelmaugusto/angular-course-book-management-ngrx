@@ -11,21 +11,31 @@ export class BookEffects {
     addBook$ = createEffect(() => this.actions$.pipe(
         // Listen for actions of type 'AddBook'
         ofType(bookActions.AddBook),
-    
+
         // For each 'AddBook' action, call 'addBook' on the book service.
         // 'mergeMap' allows multiple concurrent 'addBook' calls.
         mergeMap((action) => this.bookService.addBook(action)
         .pipe(
             // If the 'addBook' call is successful, dispatch 'AddBookSuccess' action with the book data.
             map(book => bookActions.AddBookSuccess(book)),
-    
+
             // If the 'addBook' call fails, dispatch 'AddBookFailure' action with the error.
             catchError((error) => of(bookActions.AddBookFailure({ error })))
         )
         )
     ));
-  
-    
+
+    removeBook$ = createEffect(() => this.actions$.pipe(
+        ofType(bookActions.RemoveBook),
+          mergeMap((action) => this.bookService.removeBook(action.bookId)
+            .pipe(
+              map( bookId => bookActions.RemoveBookSuccess({bookId})),
+              catchError((error) => of(bookActions.RemoveBookFailure({error})))
+            )
+          )
+    ));
+
+
     constructor(
         private actions$: Actions,
         private bookService: BookService

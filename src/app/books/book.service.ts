@@ -16,4 +16,8 @@ export class BookService {
 
     return of(book);
   }
+  removeBook(bookId: string): Observable<string> {
+    console.log('Service removeBook called.');
+    return of(bookId);
+  }
 }
